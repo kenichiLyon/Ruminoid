@@ -28,10 +28,10 @@ jobs:
       run: |
         find . -type f -name "*.csproj" -exec sed -i 's|<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>|<TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>|g' {} +
     - name: Setup NuGet
-      uses: nuget/setup-nuget@v1
+      uses: nuget/setup-nuget@v2
     - name: Restore NuGet Package
       run: nuget restore Ruminoid.sln
     - name: Prepare MSBuild
-      uses: microsoft/setup-msbuild@v1.0.0
+      uses: microsoft/setup-msbuild@v2
     - name: Build Project
       run: msbuild Ruminoid.Dashboard/Ruminoid.Dashboard.csproj /p:Configuration=Release /p:Platform=x64 /verbosity:quiet
