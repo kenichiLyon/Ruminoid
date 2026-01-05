@@ -37,4 +37,4 @@ jobs:
       uses: microsoft/setup-msbuild@v1.1.0
 
     - name: Build Solution
-      run: msbuild Ruminoid.sln /p:Configuration=Release /p:Platform=AnyCPU /verbosity:minimal
+      run: msbuild Ruminoid.sln /p:Configuration=Release /p:Platform=x64 /verbosity:minimal
