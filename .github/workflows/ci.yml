@@ -27,6 +27,10 @@ jobs:
       shell: bash
       run: |
         find . -type f -name "*.csproj" -exec sed -i 's|<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>|<TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>|g' {} +
+    - name: Remove Baseclass.Contrib.Nuget.Output
+      shell: bash
+      run: |
+        find . -type f -name "*.csproj" -exec sed -i '/Baseclass.Contrib.Nuget.Output/d' {} +
     - name: Setup NuGet
       uses: nuget/setup-nuget@v2
     - name: Restore NuGet Package
