@@ -3,38 +3,35 @@ name: CI
 on:
   push:
   pull_request:
-    branches:
+      branches:
       - '*'
-
+      
 jobs:
   ci_build:
     name: Build
     runs-on: windows-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
       with:
         submodules: recursive
-
     - name: Checkout Submodules
       shell: bash
       run: |
+        # If your submodules are configured to use SSH instead of HTTPS please uncomment the following line
+        # git config --global url."https://github.com/".insteadOf "git@github.com:"
         auth_header="$(git config --local --get http.https://github.com/.extraheader)"
         git submodule sync --recursive
         git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
-
-    - name: Install .NET Framework Developer Pack
+    - name: Fix Target Frameworks
+      shell: bash
       run: |
-        choco install netfx-4.8-devpack --force
-
+        find . -type f -name "*.csproj" -exec sed -i 's|<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>|<TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>|g' {} +
     - name: Setup NuGet
-      uses: nuget/setup-nuget@v2
-
-    - name: Restore NuGet Packages
+      uses: nuget/setup-nuget@v1
+    - name: Restore NuGet Package
       run: nuget restore Ruminoid.sln
-
     - name: Prepare MSBuild
-      uses: microsoft/setup-msbuild@v1.1.0
-
-    - name: Build Solution
-      run: msbuild Ruminoid.sln /p:Configuration=Release /p:Platform=x64 /verbosity:minimal
+      uses: microsoft/setup-msbuild@v1.0.0
+    - name: Build Project
+      run: msbuild Ruminoid.Dashboard/Ruminoid.Dashboard.csproj /p:Configuration=Release /p:Platform=x64 /verbosity:quiet
